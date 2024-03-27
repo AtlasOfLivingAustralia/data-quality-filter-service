@@ -91,6 +91,11 @@ grails:
         params:
             exclude:
                 - 'password' # request parameters to mask when logging exceptions
+    plugin:
+        databasemigration:
+            changelogFileName: changelog.xml
+            updateOnStart: true
+            updateOnStartFileName: changelog.xml
 info:
     app:
         name: '@info.app.name@'
@@ -141,7 +146,7 @@ dataSource:
     driverClassName: org.h2.Driver
     username: sa
     password: ''
-    dbCreate: "update"
+    dbCreate: "none"
     url: "jdbc:h2:file:${database.directory};MVCC=TRUE"
 
 headerAndFooter:

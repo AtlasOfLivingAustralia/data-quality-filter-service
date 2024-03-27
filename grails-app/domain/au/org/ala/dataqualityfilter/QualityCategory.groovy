@@ -16,6 +16,8 @@ class QualityCategory {
     String description
     Long displayOrder
 
+    String inverseFilter
+
     Date dateCreated
     Date lastUpdated
 
@@ -27,6 +29,7 @@ class QualityCategory {
         name unique: ['qualityProfile']
         label unique: ['qualityProfile']
         description blank: true, nullable: true
+        inverseFilter nullable: true
     }
 
     static mapping = {
@@ -38,6 +41,7 @@ class QualityCategory {
         dateCreated index: 'quality_category_date_created_idx'
         qualityFilters sort: 'displayOrder'
         sort 'displayOrder'
+        inverseFilter type: 'text'
     }
 
     static namedQueries = {

@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.6.xsd http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+<!-- This is copy from collectory:
+
+  liquibase \-\-classpath=/var/lib/tomcat8/webapps-colecciones-es.l-a.site/ROOT/WEB-INF/lib/mysql-connector-java-8.0.25.jar diffChangelog
+
+Using a liquibase.properties with:
+
+changeLogFile=changelog.postgresql.sql
+#### Target Database ####
+liquibase.command.url=jdbc:postgresql://localhost:5432/data-quality
+# username for your Target database.
+liquibase.command.username: data-quality
+liquibase.command.password: XXXXX
+#### Source Database ####
+## The source database is the baseline or reference against which your target database is compared for diff/diffchangelog commands.
+# Enter URL for the source database
+liquibase.command.referenceUrl: jdbc:postgresql://localhost:5432/data-quality
+liquibase.command.referenceUsername: data-quality
+liquibase.command.referencePassword: XXXXX
+-->
+    <changeSet author="ALA Dev Team" id="1">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="quality_filter"/>
+            </not>
+        </preConditions>
+        <comment>Initialize schema</comment>
+        <sqlFile path="initial.sql" relativeToChangelogFile="true" encoding="ISO-8859-1" stripComments="1" />
+    </changeSet>
+
+    <changeSet author="ALA Dev Team" id="20240118-00">
+        <sqlFile path="1.4.1.sql" relativeToChangelogFile="true" encoding="ISO-8859-1" stripComments="1" />
+    </changeSet>
+
+</databaseChangeLog>

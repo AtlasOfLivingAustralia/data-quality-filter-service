@@ -12,7 +12,8 @@
     </appender>
 
     <!-- These are produced by internal grails components and we don't need these logged in production -->
-    <logger name="org.hibernate.orm.deprecation" level="OFF" />
+    <logger name="org.hibernate.orm.deprecation" level="ERROR"/>
+    <logger name="org.grails.config.NavigableMap" level="ERROR"/>
 
     <root level="warn">
         <appender-ref ref="STDOUT" />

@@ -1,33 +1,23 @@
 buildscript {
-    repositories {
-        mavenLocal()
-        maven { url "https://nexus.ala.org.au/content/groups/public/" }
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "org.grails.plugins:hibernate5:$gormVersion"
-        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:$webdriverBinariesVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6"
-    }
+    version "2.0.0-SNAPSHOT"
+    group "au.org.ala"
 }
 
 plugins {
+    id "groovy"
+    id "org.grails.grails-gsp"
+    id "org.grails.grails-web"
+    id "com.github.erdi.webdriver-binaries" version "3.0"
+    id "war"
+    id "idea"
+    id "com.bertramlabs.asset-pipeline"
+    id "application"
+    id "eclipse"
+
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
+
+    id "maven-publish"
 }
-
-
-version "1.4.1-SNAPSHOT"
-group "au.org.ala"
-
-apply plugin:"eclipse"
-apply plugin:"idea"
-apply plugin:"war"
-apply plugin:"org.grails.grails-web"
-apply plugin:"com.bertramlabs.asset-pipeline"
-apply plugin:"org.grails.grails-gsp"
-apply plugin:"com.github.erdi.webdriver-binaries"
-apply plugin:"maven-publish"
 
 publishing {
     targetCompatibility = 1.11
@@ -48,7 +38,6 @@ publishing {
     }
 }
 
-
 repositories {
     mavenLocal()
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
@@ -59,6 +48,23 @@ configurations {
     developmentOnly
     runtimeClasspath {
         extendsFrom developmentOnly
+    }
+}
+
+bootWar {
+    launchScript()
+    dependsOn(compileGroovyPages)
+}
+
+war {
+    dependsOn(compileGroovyPages)
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'grails-app/migrations'
+        }
     }
 }
 
@@ -106,13 +112,13 @@ dependencies {
     testImplementation "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-safari-driver:$seleniumSafariDriverVersion"
 
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
     implementation "org.apache.commons:commons-lang3:3.7"
     implementation "org.apache.commons:commons-text:1.3"
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
     implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.2'
-    implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20180219.1"
+    implementation 'com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20211018.2'
     implementation group: 'org.apache.lucene', name: 'lucene-queryparser', version: '8.5.1'
 
     // Swagger
@@ -127,25 +133,31 @@ dependencies {
     implementation 'org.grails.plugins:http-builder-helper:1.0.2.ALA'
 
     // ALA Plugins
-    implementation "org.grails.plugins:ala-bootstrap3:4.1.0", noCache
+    implementation "org.grails.plugins:ala-bootstrap3:4.4.0", noCache
     implementation "au.org.ala.plugins.grails:downloads-plugin:3.1", noCache
     implementation "org.grails.plugins:ala-admin-plugin:2.3.0", noCache
     implementation "org.grails.plugins:ala-auth:$alaSecurityLibsVersion", noCache
     implementation "au.org.ala.plugins.grails:images-client-plugin:1.4", noCache
     implementation "au.org.ala.plugins.grails:ala-charts-plugin:2.2", noCache
+
+    implementation 'org.liquibase:liquibase-core:4.20.0'
+    implementation('org.grails.plugins:database-migration:4.2.0') {
+        // spring-boot-cli exclusion required since Grails5 upgrade to prevent NullPointerException Error:  https://github.com/grails/grails-database-migration/issues/268
+        exclude module: 'spring-boot-cli'
+    }
 }
 
-webdriverBinaries {
-    chromedriver "$chromeDriverVersion"
-    geckodriver "$geckodriverVersion"
-}
-
-tasks.withType(Test) {
-    systemProperty "geb.env", System.getProperty('geb.env')
-    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
-    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
-    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
-}
+//webdriverBinaries {
+//    chromedriver "$chromeDriverVersion"
+//    geckodriver "$geckodriverVersion"
+//}
+//
+//tasks.withType(Test) {
+//    systemProperty "geb.env", System.getProperty('geb.env')
+//    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
+//    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
+//    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
+//}
 
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')

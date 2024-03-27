@@ -170,6 +170,12 @@ class QualityService {
         if(!category){
             return ''
         }
+
+        if (category.inverseFilter) {
+            return category.inverseFilter
+        }
+
+        // legacy conversion, OK in most use cases
         PrecedenceQueryParser qp = new PrecedenceQueryParser()
         qp.setAllowLeadingWildcard(true)
         TermQuery

@@ -91,7 +91,7 @@ class QualityCategoryController extends RestfulController<QualityCategory> {
                             required = true
                     ),
                     @Parameter(
-                            name = "id",
+                            name = "categoryId",
                             in = PATH,
                             description = "The id for the quality category",
                             schema = @Schema(implementation = String),
@@ -117,7 +117,7 @@ class QualityCategoryController extends RestfulController<QualityCategory> {
                     )
             ]
     )
-    @Path("/api/v1/data-profiles/{profileId}/categories/{id}")
+    @Path("/api/v1/data-profiles/{profileId}/categories/{categoryId}")
     @Produces("application/json")
     def show() {
         render queryForResource(params.id) as JSON

@@ -80,6 +80,7 @@
                                             <g:hiddenField name="id" value="${category.id}"/>
                                             <g:hiddenField name="version" value="${category.version}"/>
                                             <g:hiddenField name="description" value="${category.description}" />
+                                            <g:hiddenField name="inverse-filter" value="${category.inverseFilter}" />
                                             <div class="form-group">
                                                 <label for="name">Name</label>
                                                 <g:textField class="form-control" name="name" value="${category.name}" />
@@ -94,10 +95,17 @@
                                     </span>
                                 </h3>
                             </div>
-                            <g:if test="${category.description}">
                             <div class="panel-body">
                                 <span class="category-description-ro">
-                                    <p class="category-description">${category.description}</p>
+                                    <label for="${category.id + '-description'}">Description</label>
+                                    <p class="category-description" id="${category.id + '-description'}">${category.description}</p>
+                                    <label for="${category.id + '-inverse-filter'}">Inverse Filter (required if any "Filter Value" is complex. e.g. has a bracket)</label>
+                                    <p class="category-inverse-filter" id="${category.id + '-inverse-filter'}">${category.inverseFilter}</p>
+                                    <g:if test="${!category.inverseFilter && category.qualityFilters.find{it.filter.contains(" AND ") || it.filter.contains(" OR ") || it.filter.contains("(") }}">
+                                        <div class="alert alert-danger">
+                                            <p>Error: inverseFilter required</p>
+                                        </div>
+                                    </g:if>
                                     <button class="btn btn-default"><i class="fa fa-edit"></i></button>
                                 </span>
                                 <span class="category-description-rw hidden">
@@ -106,13 +114,15 @@
                                         <g:hiddenField name="version" value="${category.version}"/>
                                         <g:hiddenField name="name" value="${category.name}"/>
                                         <g:hiddenField name="label" value="${category.label}"/>
-                                        <g:textArea class="form-control" name="description" value="${category.description}" />
+                                        <label for="${category.id + '-description-textarea'}">Description</label>
+                                        <g:textArea class="form-control" name="description" id="${category.id + '-description-textarea'}" value="${category.description}" />
+                                        <label for="${category.id + '-inverse-filter-textarea'}">Inverse Filter (required if any "Filter Value" is complex. e.g. has a bracket)</label>
+                                        <g:textArea class="form-control" name="inverseFilter" id="${category.id + '-inverse-filter-textarea'}" value="${category.inverseFilter}" />
                                         <button type="submit" class="btn btn-success"><i class="fa fa-save"></i></button>
                                         <button type="reset" class="btn btn-default"><i class="fa fa-close"></i></button>
                                     </g:form>
                                 </span>
                             </div>
-                            </g:if>
                             <table id="${category.id}" data-profileid="${profile.id}" data-categorylabel="${category.label}" class="table table-responsive filterstable" style="table-layout:fixed;">
                                 <g:each in="${category.qualityFilters.sort{it.displayOrder}}" var="filter">
                                 <tr id="${'filter' + filter.id}" class="${filter.enabled ? 'bg-default' : 'bg-warning'}" data-curdisplayorder="${filter.displayOrder}" data-filtervalue="${filter.filter}">
